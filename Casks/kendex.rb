@@ -18,17 +18,13 @@ cask "kendex" do
 
   app "kendex.app"
 
-  # The app is ad-hoc signed, not notarized yet, so the download carries a
-  # quarantine flag that Gatekeeper would block. Remove it so the app
-  # launches; a notarized build will make this unnecessary.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/kendex.app"]
-  end
-
   caveats <<~EOS
-    kendex is not notarized by Apple yet. It is de-quarantined on install so
-    it launches; a notarized build will replace this.
+    kendex is not notarized by Apple yet, so macOS may say the app is
+    "damaged" on first launch. Clear the quarantine flag once:
+
+      xattr -cr /Applications/kendex.app
+
+    The kendex command is installed by the formula and is unaffected.
   EOS
 
   zap trash: [
